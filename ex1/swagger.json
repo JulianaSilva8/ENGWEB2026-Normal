@@ -1,0 +1,171 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Jogos de Tabuleiro API",
+    "version": "1.0.0",
+    "description": "API de dados do exercício 1 de Engenharia Web."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:17000",
+      "description": "Servidor local"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Entidade": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "country": { "type": "string" },
+          "year": { "type": "integer" }
+        }
+      },
+      "Jogo": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "catan" },
+          "name": { "type": "string", "example": "Catan" },
+          "year": { "type": "integer", "example": 1995 },
+          "category": { "type": "string", "example": "Family" },
+          "minPlayers": { "type": "integer", "example": 3 },
+          "maxPlayers": { "type": "integer", "example": 4 },
+          "playingTimeMinutes": { "type": "integer", "example": 120 },
+          "descriptionEN": { "type": "string" },
+          "autores": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Entidade" }
+          },
+          "editoras": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Entidade" }
+          },
+          "mecanicas": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Entidade" }
+          },
+          "premios": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Entidade" }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/jogos": {
+      "get": {
+        "summary": "Lista todos os jogos ou filtra por editora",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "editora",
+            "schema": { "type": "string" },
+            "required": false,
+            "description": "Nome ou id da editora"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de jogos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Jogo" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Acrescenta um novo jogo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Jogo" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Jogo criado" },
+          "500": { "description": "Erro ao criar jogo" }
+        }
+      }
+    },
+    "/jogos/{id}": {
+      "get": {
+        "summary": "Obtém um jogo pelo identificador",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Jogo encontrado" },
+          "404": { "description": "Jogo não encontrado" }
+        }
+      },
+      "put": {
+        "summary": "Atualiza um jogo pelo identificador",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Jogo" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Jogo atualizado" },
+          "404": { "description": "Jogo não encontrado" }
+        }
+      },
+      "delete": {
+        "summary": "Remove um jogo pelo identificador",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Jogo removido" },
+          "404": { "description": "Jogo não encontrado" }
+        }
+      }
+    },
+    "/autores": {
+      "get": {
+        "summary": "Lista autores sem repetições, ordenados alfabeticamente",
+        "responses": {
+          "200": { "description": "Lista de autores" }
+        }
+      }
+    },
+    "/categorias": {
+      "get": {
+        "summary": "Lista categorias sem repetições, ordenadas alfabeticamente",
+        "responses": {
+          "200": { "description": "Lista de categorias" }
+        }
+      }
+    }
+  }
+}

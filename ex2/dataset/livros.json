@@ -1,0 +1,44 @@
+[
+  {
+    "titulo": "O Principezinho",
+    "autor": "Antoine de Saint-Exupéry",
+    "paginas": 96,
+    "genero": "Fábula",
+    "lido": false
+  },
+  {
+    "titulo": "Ensaio sobre a Cegueira",
+    "autor": "José Saramago",
+    "paginas": 312,
+    "genero": "Romance",
+    "lido": true
+  },
+  {
+    "titulo": "1984",
+    "autor": "George Orwell",
+    "paginas": 328,
+    "genero": "Distopia",
+    "lido": false
+  },
+  {
+    "titulo": "A Cidade e as Serras",
+    "autor": "Eça de Queirós",
+    "paginas": 240,
+    "genero": "Romance",
+    "lido": false
+  },
+  {
+    "titulo": "Capitães da Areia",
+    "autor": "Jorge Amado",
+    "paginas": 280,
+    "genero": "Romance",
+    "lido": true
+  },
+  {
+    "titulo": "A Metamorfose",
+    "autor": "Franz Kafka",
+    "paginas": 104,
+    "genero": "Novela",
+    "lido": false
+  }
+]

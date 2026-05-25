@@ -1,0 +1,95 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: jogostabuleiro_mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend
+
+  mongo-seed:
+    image: mongo:7
+    container_name: jogostabuleiro_seed
+    depends_on:
+      - mongo
+    volumes:
+      - ./dataset.json:/dataset.json:ro
+    command: >
+      sh -c "sleep 5 && mongoimport --host mongo --db jogostabuleiro --collection jogos --file /dataset.json --jsonArray --drop"
+    networks:
+      - backend
+    restart: "no"
+
+  api:
+    build: ./ex1
+    container_name: jogostabuleiro_api
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - mongo-seed
+    environment:
+      - PORT=17000
+      - MONGODB_URI=mongodb://mongo:27017/jogostabuleiro
+    ports:
+      - "17000:17000"
+    networks:
+      - backend
+
+  mongo_livros:
+    image: mongo:7
+    container_name: leituras_mongo
+    restart: unless-stopped
+    volumes:
+      - livros_data:/data/db
+    networks:
+      - leituras_net
+
+  mongo_livros_seed:
+    image: mongo:7
+    container_name: leituras_seed
+    depends_on:
+      - mongo_livros
+    volumes:
+      - ./ex2/dataset/livros.json:/livros.json:ro
+    command: >
+      sh -c "sleep 5 && mongoimport --host mongo_livros --db leituras --collection livros --file /livros.json --jsonArray --drop"
+    networks:
+      - leituras_net
+    restart: "no"
+
+  api_livros:
+    build: ./ex2
+    container_name: leituras_api
+    restart: unless-stopped
+    depends_on:
+      - mongo_livros
+      - mongo_livros_seed
+    environment:
+      - PORT=19020
+      - MONGODB_URI=mongodb://mongo_livros:27017/leituras
+    ports:
+      - "19020:19020"
+    networks:
+      - leituras_net
+
+  frontend_livros:
+    build: ./ex2/nginx
+    container_name: leituras_frontend
+    restart: unless-stopped
+    depends_on:
+      - api_livros
+    ports:
+      - "19021:80"
+    networks:
+      - leituras_net
+
+volumes:
+  mongo_data:
+  livros_data:
+
+networks:
+  backend:
+    driver: bridge
+  leituras_net:
+    driver: bridge
